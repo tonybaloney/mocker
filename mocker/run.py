@@ -29,12 +29,12 @@ class RunCommand(BaseDockerCommand):
         with open(target_file) as tf:
             image_details = json.loads(tf.read())
 
-        name = 'container_' + str(uuid.uuid1()).replace('-', '_')
+        name = 'c_' + str(uuid.uuid1().fields[5])[:4]
 
         layer_dir = os.path.join(_base_dir_, match.replace('.json', ''), 'layers', 'contents')
 
-        net_commands = """
-        ip link add dev veth0_{0} type veth peer name veth1_{0}
+        net_commands = \
+        """ip link add dev veth0_{0} type veth peer name veth1_{0}
         ip link set dev veth0_{0} up
         ip link set veth0_{0} master bridge0
         ip netns add netns_{0}
@@ -47,9 +47,8 @@ class RunCommand(BaseDockerCommand):
         for command in net_commands.split('\n'):
             # TODO: make IP configurable
             command_str = command.format(name, 3, ':33')
-            out = subprocess.check_output(command_str)
-            if not out:
-                raise RuntimeError("Arrrrrghhh")
+            print("Running %s" % command_str)
+            out = subprocess.check_output(command_str, shell=True)
 
         # First we create the cgroup and we set it's cpu and memory limits
         cg = Cgroup(name)
