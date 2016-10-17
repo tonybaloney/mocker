@@ -1,6 +1,5 @@
 import os
 import json
-import sys
 from terminaltables import AsciiTable
 
 from mocker import _base_dir_
