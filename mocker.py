@@ -11,5 +11,5 @@ if __name__ == '__main__':
     if arguments['pull']:
         command = PullCommand
 
-    cls = command()
+    cls = command(**arguments)
     cls.run(**arguments)

@@ -21,7 +21,7 @@ class PullCommand(BaseDockerCommand):
             % (library, image))
         return token_req.json()['token']
 
-    def get_manifest(self, headers):
+    def get_manifest(self):
         # get the image manifest
         print("Fetching manifest for %s:%s..." % (self.image, self.tag))
 
@@ -29,13 +29,12 @@ class PullCommand(BaseDockerCommand):
                                 (self.registry_base, self.library, self.image, self.tag),
                                 headers=self.headers)
 
-        manifest = manifest.json()
+        return manifest.json()
 
     def run(self, *args, **kwargs):
         # login anonymously
         self.headers = {'Authorization': 'Bearer %s' % self.auth(self.library,
                                                                  self.image)}
-
         # get the manifest
         manifest = self.get_manifest()
 
