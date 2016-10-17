@@ -1,19 +1,15 @@
 #!/usr/bin/python
-"""Mocker.
-
-Usage:
-  mocker pull <name>[:<tag>]
-  mocker (-h | --help)
-  mocker --version
-
-Options:
-  -h --help     Show this screen.
-  --version     Show version.
-"""
 from docopt import docopt
+
 import mocker
+from mocker.base import BaseDockerCommand
+from mocker.pull import PullCommand
 
 if __name__ == '__main__':
-    arguments = docopt(__doc__, version=mocker.__version__)
-    print(arguments)
+    arguments = docopt(mocker.__doc__, version=mocker.__version__)
+    command = BaseDockerCommand
+    if arguments['pull']:
+        command = PullCommand
 
+    cls = command()
+    cls.run(**arguments)

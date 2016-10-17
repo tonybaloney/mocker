@@ -1,3 +1,4 @@
+import os
 __copyright__ = """
    Copyright 2016 Anthony Shaw
 
@@ -14,3 +15,20 @@ __copyright__ = """
    limitations under the License.
 """
 __version__ = '1.0.0'
+
+__doc__ = """Mocker.
+
+Usage:
+  mocker pull <name>[<tag>]
+  mocker (-h | --help)
+  mocker --version
+
+Options:
+  -h --help     Show this screen.
+  --version     Show version.
+"""
+
+_base_dir_ = os.path.join(os.path.expanduser('~'), 'mocker')
+
+if not os.path.exists(_base_dir_):
+    os.makedirs(_base_dir_)
