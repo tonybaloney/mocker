@@ -34,3 +34,7 @@ _base_dir_ = os.path.join(os.path.expanduser('~'), 'mocker')
 
 if not os.path.exists(_base_dir_):
     os.makedirs(_base_dir_)
+
+import logging
+logging.basicConfig()
+log = logging.getLogger()

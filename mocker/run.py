@@ -5,7 +5,7 @@ import subprocess
 
 from cgroups import Cgroup
 
-from mocker import _base_dir_
+from mocker import _base_dir_, log
 from .base import BaseDockerCommand
 from .images import ImagesCommand
 
@@ -47,8 +47,9 @@ class RunCommand(BaseDockerCommand):
         for command in net_commands.split('\n'):
             # TODO: make IP configurable
             command_str = command.format(name, 3, ':33')
-            print("Running %s" % command_str)
+            log.debug("Running %s" % command_str)
             out = subprocess.check_output(command_str, shell=True)
+            print(out)
 
         # First we create the cgroup and we set it's cpu and memory limits
         cg = Cgroup(name)
@@ -66,3 +67,14 @@ class RunCommand(BaseDockerCommand):
             p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup)
             p1.wait()
             print(p1.stdout)
+
+        # clean up
+        net_commands = \
+        """ip link del dev veth0_{0}
+        ip netns del netns_{0}"""
+        for command in net_commands.split('\n'):
+            # TODO: make IP configurable
+            command_str = command.format(name)
+            log.debug("Running %s" % command_str)
+            out = subprocess.check_output(command_str, shell=True)
+            print(out)
