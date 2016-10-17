@@ -57,6 +57,7 @@ class PullCommand(BaseDockerCommand):
         if not os.path.exists(contents_path):
             os.makedirs(contents_path)
 
+        # download all the parts
         for sig in unique_layer_sigs:
             print('Fetching layer %s..' % sig)
             url = '%s/%s/%s/blobs/%s' % (self.registry_base, self.library,

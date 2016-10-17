@@ -1,2 +1,3 @@
 requests
 docopt
+asciitable

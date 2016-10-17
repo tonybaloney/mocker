@@ -20,6 +20,7 @@ __doc__ = """Mocker.
 
 Usage:
   mocker pull <name>[<tag>]
+  mocker images
   mocker (-h | --help)
   mocker --version
 
