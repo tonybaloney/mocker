@@ -1,6 +1,7 @@
 import requests
 import os
 import json
+import tarfile
 from mocker import _base_dir_
 from .base import BaseDockerCommand
 
@@ -53,3 +54,14 @@ class PullCommand(BaseDockerCommand):
                 for chunk in r.iter_content(chunk_size=1024):
                     if chunk: # filter out keep-alive new chunks
                         f.write(chunk)
+
+            # list some of the contents..
+            with tarfile.open(local_filename, 'r') as tar:
+                for member in tar.getmembers()[:10]:
+                    print(member)
+                print('...')
+                contents_path = os.path.join(dl_path, 'contents')
+                if not os.path.exists(contents_path):
+                    os.makedirs(contents_path)
+
+                tar.extractall(str(contents_path))
