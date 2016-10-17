@@ -40,24 +40,30 @@ class RunCommand(BaseDockerCommand):
         layer_dir = os.path.join(_base_dir_, match.replace('.json', ''), 'layers', 'contents')
 
         with IPDB() as ipdb:
-            veth_name = 'veth_'+name
+            veth0_name = 'veth0_'+name
+            veth1_name = 'veth1_'+name
             netns_name = 'netns_'+name
+
             # Create a new virtual interface
-            i1 = ipdb.create(kind='veth', ifname=veth_name).commit()
-            i1.up()
+            with ipdb.create(kind='veth', ifname=veth0_name, peer=veth1_name) as i1:
+                i1.up()
 
-            bridge = ipdb.create(kind='bridge', ifname='bridge0').commit()
-            bridge.add_port(i1)
-            net_commands = "ip netns exec netns_{0} ip route add default via 10.0.0.1"
+                bridge = ipdb.create(kind='bridge', ifname='bridge0').commit()
+                bridge.add_port(i1)
 
-            netns.create(netns_name)
-            i1.net_ns_fd = netns_name
+                # Create a network namespace
+                netns.create(netns_name)
+                i1.net_ns_fd = netns_name
+
+            # Use this network namespace as the database
             with IPDB(NetNS(netns_name)) as ns:
                 ns.interfaces.lo.up()
-                ns.interfaces[veth_name].address = "02:42:ac:11:00:{0}".format(mac)
-                ns.interfaces[veth_name].add_ip('10.0.0.{0}/24'.format(ip_last_octet))
-                ns.interfaces[veth_name].up()
-                # TODO : default route
+                ns.interfaces[veth1_name].address = "02:42:ac:11:00:{0}".format(mac)
+                ns.interfaces[veth1_name].add_ip('10.0.0.{0}/24'.format(ip_last_octet))
+                ns.interfaces[veth1_name].up()
+                ns.routes.add({
+                    'dst': 'default',
+                    'gateway': '10.0.0.1'}).commit()
 
             # First we create the cgroup and we set it's cpu and memory limits
             cg = Cgroup(name)
