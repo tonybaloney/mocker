@@ -43,10 +43,10 @@ class RunCommand(BaseDockerCommand):
             veth_name = 'veth_'+name
             netns_name = 'netns_'+name
             # Create a new virtual interface
-            i1 = ipdb.create(kind='veth', ifname=veth_name, peer=veth_name)
+            i1 = ipdb.create(kind='veth', ifname=veth_name).commit()
             i1.up()
 
-            bridge = ipdb.create(kind='bridge', ifname='bridge0')
+            bridge = ipdb.create(kind='bridge', ifname='bridge0').commit()
             bridge.add_port(i1)
             net_commands = "ip netns exec netns_{0} ip route add default via 10.0.0.1"
 
@@ -57,6 +57,7 @@ class RunCommand(BaseDockerCommand):
                 ns.interfaces[veth_name].address = "02:42:ac:11:00:{0}".format(mac)
                 ns.interfaces[veth_name].add_ip('10.0.0.{0}/24'.format(ip_last_octet))
                 ns.interfaces[veth_name].up()
+                # TODO : default route
 
             # First we create the cgroup and we set it's cpu and memory limits
             cg = Cgroup(name)
