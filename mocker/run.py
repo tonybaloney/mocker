@@ -45,14 +45,15 @@ class RunCommand(BaseDockerCommand):
         ip netns exec netns_{0} ip link set dev veth1_{0} up
         ip netns exec netns_{0} ip route add default via 10.0.0.1"""
         for command in net_commands.split('\n'):
+            # TODO: make IP configurable
             command_str = command.format(name, 3, ':33')
             out = subprocess.check_output(command_str)
             if not out:
                 raise RuntimeError("Arrrrrghhh")
 
-        # First we create the cgroup 'charlie' and we set it's cpu and memory limits
+        # First we create the cgroup and we set it's cpu and memory limits
         cg = Cgroup(name)
-        cg.set_cpu_limit(50)
+        cg.set_cpu_limit(50)  # TODO : get these as command line options
         cg.set_memory_limit(500)
 
         # Then we a create a function to add a process in the cgroup
@@ -64,3 +65,5 @@ class RunCommand(BaseDockerCommand):
         with Chroot(layer_dir):
             entry_cmd = '/bin/sh echo "gordo!"' # TODO get out of Dockerfile
             p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup)
+            p1.wait()
+            print(p1.stdout)
