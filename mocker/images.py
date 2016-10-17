@@ -12,8 +12,8 @@ class ImagesCommand(BaseDockerCommand):
     def __init__(self, *args, **kwargs):
         pass
 
-    def run(self, *args, **kwargs):
-        images = [['name', 'version', 'size']]
+    def list_images(self):
+        images = [['name', 'version', 'size', 'file']]
 
         for image_file in os.listdir(_base_dir_):
             if image_file.endswith('.json'):
@@ -23,8 +23,11 @@ class ImagesCommand(BaseDockerCommand):
                 size = sum(os.path.getsize(os.path.join(image_base, f)) for f in
                            os.listdir(image_base)
                            if os.path.isfile(os.path.join(image_base, f)))
-                images.append([image['name'], image['tag'], sizeof_fmt(size)])
+                images.append([image['name'], image['tag'], sizeof_fmt(size), image_file])
+        return images
 
+    def run(self, *args, **kwargs):
+        images = self.list_images()
         table = AsciiTable(images)
         print(table.table)
 
