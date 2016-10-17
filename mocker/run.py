@@ -40,11 +40,10 @@ class RunCommand(BaseDockerCommand):
         layer_dir = os.path.join(_base_dir_, match.replace('.json', ''), 'layers', 'contents')
 
         with IPDB() as ipdb:
-            log.debug(ip.get_links())
             veth_name = 'veth_'+name
             netns_name = 'netns_'+name
             # Create a new virtual interface
-            i1 = ipdb.create(kind='veth', ifname=veth_name, peer=veth_name).commit()
+            i1 = ipdb.create(kind='veth', ifname=veth_name, peer=veth_name)
             i1.up()
 
             bridge = ipdb.create(kind='bridge', ifname='bridge0')
@@ -53,7 +52,7 @@ class RunCommand(BaseDockerCommand):
 
             netns.create(netns_name)
             i1.net_ns_fd = netns_name
-            with NetNS(netns_name) as ns:
+            with IPDB(NetNS(netns_name)) as ns:
                 ns.interfaces.lo.up()
                 ns.interfaces[veth_name].address = "02:42:ac:11:00:{0}".format(mac)
                 ns.interfaces[veth_name].add_ip('10.0.0.{0}/24'.format(ip_last_octet))
