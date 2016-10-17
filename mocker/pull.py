@@ -51,6 +51,5 @@ class PullCommand(BaseDockerCommand):
             r = requests.get(url, stream=True, headers=headers)
             with open(local_filename, 'wb') as f:
                 for chunk in r.iter_content(chunk_size=1024):
-                    print('.')
                     if chunk: # filter out keep-alive new chunks
                         f.write(chunk)
