@@ -2,8 +2,9 @@ import os
 import uuid
 import json
 import subprocess
-from pyroute2 import IPDB, NetNS, netns, IPRoute
+from pyroute2 import IPDB, NetNS, netns
 from cgroups import Cgroup
+from cgroups.user import create_user_cgroups
 
 from mocker import _base_dir_, log
 from .base import BaseDockerCommand
@@ -73,22 +74,30 @@ class RunCommand(BaseDockerCommand):
                     'dst': 'default',
                     'gateway': '10.0.0.1'})
 
-            # First we create the cgroup and we set it's cpu and memory limits
-            cg = Cgroup(name)
-            cg.set_cpu_limit(50)  # TODO : get these as command line options
-            cg.set_memory_limit(500)
+            try:
+                # setup cgroup directory for this user
+                user = os.getlogin()
+                create_user_cgroups(user)
 
-            # Then we a create a function to add a process in the cgroup
-            def in_cgroup():
-                pid = os.getpid()
+                # First we create the cgroup and we set it's cpu and memory limits
                 cg = Cgroup(name)
-                cg.add(pid)
+                cg.set_cpu_limit(50)  # TODO : get these as command line options
+                cg.set_memory_limit(500)
 
-            with Chroot(layer_dir):
-                entry_cmd = '/bin/sh echo "gordo!"' # TODO get out of Dockerfile
-                p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup)
-                p1.wait()
-                print(p1.stdout)
+                # Then we a create a function to add a process in the cgroup
+                def in_cgroup():
+                    pid = os.getpid()
+                    cg = Cgroup(name)
+                    cg.add(pid)
 
-            NetNS(netns_name).close()
-            ipdb.interfaces[veth0_name].release()
+                with Chroot(layer_dir):
+                    entry_cmd = '/bin/sh echo "gordo!"' # TODO get out of Dockerfile
+                    p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup)
+                    p1.wait()
+                    print(p1.stdout)
+
+            except Exception as e:
+                log.error(e)
+            finally:
+                NetNS(netns_name).close()
+                ipdb.interfaces[veth0_name].release()
