@@ -34,7 +34,8 @@ class RunCommand(BaseDockerCommand):
             image_details = json.loads(tf.read())
         # setup environment details
         state = json.loads(image_details['history'][0]['v1Compatibility'])
-        pprint(state)
+        env_vars = state['config']['Env']
+        start_cmd = state['config']['Cmd']
 
         id = uuid.uuid1()
 
@@ -95,6 +96,10 @@ class RunCommand(BaseDockerCommand):
                     try:
                         pid = os.getpid()
                         cg = Cgroup(name)
+                        for env in env_vars:
+                            log.debug('Setting ENV %s' % env)
+                            os.putenv(*env.split('='))
+
                         # Set network namespace
                         netns.setns(netns_name)
 
