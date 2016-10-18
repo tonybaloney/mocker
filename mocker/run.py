@@ -88,10 +88,11 @@ class RunCommand(BaseDockerCommand):
                 def in_cgroup():
                     pid = os.getpid()
                     cg = Cgroup(name)
+                    netns.setns(netns_name)
                     cg.add(pid)
 
                 entry_cmd = 'chroot {0}'.format(layer_dir) # TODO get out of Dockerfile
-                p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup)
+                p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup, shell=True)
                 # p1.wait()
                 print(p1.stdout)
 
@@ -99,4 +100,5 @@ class RunCommand(BaseDockerCommand):
                 log.error(e)
             finally:
                 NetNS(netns_name).close()
-                ipdb.interfaces[veth0_name].release()
+                netns.remove(netns_name)
+                ipdb.interfaces[veth0_name].remove()
