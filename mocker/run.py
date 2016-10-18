@@ -25,7 +25,7 @@ class RunCommand(BaseDockerCommand):
     def run(self, *args, **kwargs):
         images = ImagesCommand().list_images()
         image_name = kwargs['<name>']
-        ip_last_octet = 3 # TODO : configurable
+        ip_last_octet = 103 # TODO : configurable
 
         match = [i[3] for i in images if i[0] == image_name][0]
 
@@ -34,9 +34,9 @@ class RunCommand(BaseDockerCommand):
             image_details = json.loads(tf.read())
         # setup environment details
         state = json.loads(image_details['history'][0]['v1Compatibility'])
-        # pprint(state)
+        pprint(state)
         env_vars = state['config']['Env']
-        start_cmd = ' '.join(state['config']['Cmd'])
+        start_cmd = subprocess.list2cmdline(state['config']['Cmd'])
         working_dir = state['config']['WorkingDir']
 
         id = uuid.uuid1()
@@ -110,6 +110,7 @@ class RunCommand(BaseDockerCommand):
 
                         os.chroot(layer_dir)
                         if working_dir != '':
+                            log.info("Setting working directory to %s" % working_dir)
                             os.chdir(working_dir)
                     except Exception as e:
                         traceback.print_exc()
@@ -117,7 +118,7 @@ class RunCommand(BaseDockerCommand):
                         log.error(e)
                 cmd = start_cmd
                 log.info('Running "%s"' % cmd)
-                process = subprocess.Popen(cmd, preexec_fn=in_cgroup)
+                process = subprocess.Popen(cmd, preexec_fn=in_cgroup, shell=True)
                 process.wait()
                 print(process.stdout)
                 log.error(process.stderr)
