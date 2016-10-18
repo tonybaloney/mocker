@@ -111,10 +111,9 @@ class RunCommand(BaseDockerCommand):
                     except Exception as e:
                         traceback.print_exc()
                         log.error(e)
-
-                process = subprocess.Popen('cd {0} ; ./{1} &> /tmp/out'.format(working_dir,
-                                                                              start_cmd),
-                                           preexec_fn=in_cgroup, shell=True)
+                cmd = 'cd {0} ; ./{1} &> /tmp/out'.format(working_dir, start_cmd)
+                log.debug('Running "%s"' % cmd)
+                process = subprocess.Popen(cmd, preexec_fn=in_cgroup, shell=True)
                 process.wait()
 
             except Exception as e:
