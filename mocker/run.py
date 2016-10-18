@@ -98,7 +98,7 @@ class RunCommand(BaseDockerCommand):
                         cg = Cgroup(name)
                         for env in env_vars:
                             log.info('Setting ENV %s' % env)
-                            os.putenv(*env.split('=', 2))
+                            os.putenv(*env.split('=', 1))
 
                         # Set network namespace
                         netns.setns(netns_name)
