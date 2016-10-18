@@ -10,6 +10,14 @@ I keep hearing statements like "Docker is basically just cgroups", "Docker is ju
 I'm giving a talk at the Sydney Docker meetup on the 18th October about some of the core concepts in Kernel namespaces, cgroups and network namespaces and fancied a simple implementation to show how container isolation works, the docker image format (the new API) and also how much more there is to
 Docker than those core kernel features.
 
+## Caveats
+
+1. I wrote this in 2 days, don't take it seriously
+2. This will only work on Linux, tested on CentOS 7 and Ubuntu 14. 
+3. Try out the nginx container ![](https://pbs.twimg.com/media/CvEzEJFUIAQfX2z.jpg)
+4. My networking implementation is half-finished, still need to figure out the NAT'ing.
+5. I tried some images and had problems with their start commands, I must be layering the stack incorrectly. It does chroot on the squashed image download instead of using a btrfs snapshot mount. 
+
 ## mocker pull
 
 Mocker pull will download a Docker image from the Docker public repository, download the image layers and extract them into a local folder.
