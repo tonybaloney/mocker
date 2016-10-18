@@ -87,16 +87,19 @@ class RunCommand(BaseDockerCommand):
 
                 # Then we a create a function to add a process in the cgroup
                 def in_cgroup():
-                    pid = os.getpid()
-                    cg = Cgroup(name)
-                    # Set network namespace
-                    netns.setns(netns_name)
+                    try:
+                        pid = os.getpid()
+                        cg = Cgroup(name)
+                        # Set network namespace
+                        netns.setns(netns_name)
 
-                    # Set chroot
-                    os.chroot(layer_dir)
-                    
-                    # add process to cgroup
-                    cg.add(pid)
+                        # add process to cgroup
+                        cg.add(pid)
+                        
+                        os.chroot(layer_dir)
+                    except Exception as e:
+                        traceback.print_exc()
+                        log.error(e)
 
                 p2 = subprocess.Popen('echo "hello world" > /tmp/test', preexec_fn=in_cgroup, shell=True)
 
@@ -104,6 +107,7 @@ class RunCommand(BaseDockerCommand):
                 traceback.print_exc()
                 log.error(e)
             finally:
+                log.info('Finalizing')
                 NetNS(netns_name).close()
                 netns.remove(netns_name)
                 ipdb.interfaces[veth0_name].remove()
