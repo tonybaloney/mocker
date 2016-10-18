@@ -88,11 +88,13 @@ class RunCommand(BaseDockerCommand):
                 def in_cgroup():
                     pid = os.getpid()
                     cg = Cgroup(name)
-                    # Set chroot
-                    os.chroot(layer_dir)
-
                     # Set network namespace
                     netns.setns(netns_name)
+
+                    # Set chroot
+                    os.chroot(layer_dir)
+                    
+                    # add process to cgroup
                     cg.add(pid)
 
                 p2 = subprocess.Popen('echo "hello world" > /tmp/test', preexec_fn=in_cgroup, shell=True)
