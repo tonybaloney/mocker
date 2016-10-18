@@ -75,12 +75,14 @@ class RunCommand(BaseDockerCommand):
                 veth1.net_ns_fd = netns_name
 
             # Use this network namespace as the database
-            with IPDB(nl=NetNS(netns_name)) as ns:
-                ns.interfaces.lo.up()
-                ns.interfaces[veth1_name].address = "02:42:ac:11:00:{0}".format(mac)
-                ns.interfaces[veth1_name].add_ip('10.0.0.{0}/24'.format(ip_last_octet))
-                ns.interfaces[veth1_name].up()
-                ns.routes.add({
+            ns = IPDB(nl=NetNS(netns_name))
+            with ns.interfaces.lo as lo:
+                lo.up()
+            with ns.interfaces[veth1_name] as veth1:
+                veth1.address = "02:42:ac:11:00:{0}".format(mac)
+                veth1.add_ip('10.0.0.{0}/24'.format(ip_last_octet))
+                veth1.up()
+            ns.routes.add({
                     'dst': 'default',
                     'gateway': '10.0.0.1'})
 
