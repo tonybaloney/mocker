@@ -81,7 +81,7 @@ class ColorizingStreamHandler(logging.StreamHandler):
 
 log = logging.getLogger()
 handler = ColorizingStreamHandler(sys.stdout)
-formatter = log.Formatter('%(message)s')
+formatter = logging.Formatter('%(message)s')
 handler.setFormatter(formatter)
 log.addHandler(handler)
 log.setLevel(logging.DEBUG)
