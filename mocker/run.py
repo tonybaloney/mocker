@@ -62,10 +62,8 @@ class RunCommand(BaseDockerCommand):
             with ipdb.create(kind='veth', ifname=veth0_name, peer=veth1_name) as i1:
                 i1.up()
                 if bridge_if_name not in existing_interfaces:
-                    bridge = ipdb.create(kind='bridge', ifname=bridge_if_name).commit()
-                    bridge.add_port(i1).commit()
-                else:
-                    ipdb.interfaces[bridge_if_name].add_port(i1).commit()
+                    ipdb.create(kind='bridge', ifname=bridge_if_name).commit()
+                i1.set_target('master', bridge_if_name)
 
             # Create a network namespace
             netns.create(netns_name)
