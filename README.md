@@ -10,6 +10,22 @@ I keep hearing statements like "Docker is basically just cgroups", "Docker is ju
 I'm giving a talk at the Sydney Docker meetup on the 18th October about some of the core concepts in Kernel namespaces, cgroups and network namespaces and fancied a simple implementation to show how container isolation works, the docker image format (the new API) and also how much more there is to
 Docker than those core kernel features.
 
+## install 
+
+```
+$ pip install virtualenv
+$ virtualenv ENV
+$ source ENV/bin/activate
+$ pip install -r requirements.txt
+$ ./mocker.py help
+Usage:
+  mocker pull <name>[<tag>]
+  mocker run <name>
+  mocker images
+  mocker (-h | --help)
+  mocker --version 
+```
+
 ## mocker pull
 
 Mocker pull will download a Docker image from the Docker public repository, download the image layers and extract them into a local folder.
