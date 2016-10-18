@@ -31,6 +31,11 @@ class RunCommand(BaseDockerCommand):
         target_file = os.path.join(_base_dir_, match)
         with open(target_file) as tf:
             image_details = json.loads(tf.read())
+
+        # setup environment details
+        state = json.loads(image_details['history'][0])
+        import pprint; pprint.pprint(state)
+
         id = uuid.uuid1()
 
         # unique-ish name
@@ -95,13 +100,13 @@ class RunCommand(BaseDockerCommand):
 
                         # add process to cgroup
                         cg.add(pid)
-                        
+
                         os.chroot(layer_dir)
                     except Exception as e:
                         traceback.print_exc()
                         log.error(e)
 
-                p2 = subprocess.Popen('echo "hello world" > /tmp/test', preexec_fn=in_cgroup, shell=True)
+                subprocess.Popen('echo "hello world" > /tmp/test', preexec_fn=in_cgroup, shell=True)
 
             except Exception as e:
                 traceback.print_exc()
