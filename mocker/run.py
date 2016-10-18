@@ -2,6 +2,7 @@ import os
 import uuid
 import json
 import subprocess
+import traceback
 from pyroute2 import IPDB, NetNS, netns
 from cgroups import Cgroup
 from cgroups.user import create_user_cgroups
@@ -100,8 +101,10 @@ class RunCommand(BaseDockerCommand):
                 p2 = subprocess.Popen('echo "hello world" > /tmp/test', preexec_fn=in_cgroup, shell=True)
 
             except Exception as e:
+                traceback.print_exc()
                 log.error(e)
             finally:
                 NetNS(netns_name).close()
                 netns.remove(netns_name)
                 ipdb.interfaces[veth0_name].remove()
+                log.info('done')
