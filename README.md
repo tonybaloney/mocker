@@ -69,29 +69,41 @@ Mocker run will
 - Execute the docker image's chosen Cmd, setup environment variables and write the output to /tmp/stdout
 
 ```
-./mocker.py run library/tomcat
+./mocker.py run library/hello-world
 Creating cgroups sub-directories for user root
 Hierarchies availables: ['hugetlb', 'perf_event', 'blkio', 'devices', 'memory', 'cpuacct', 'cpu', 'cpuset', 'freezer', 'systemd']
 cgroups sub-directories created for user root
 Creating cgroups sub-directories for user root
 Hierarchies availables: ['hugetlb', 'perf_event', 'blkio', 'devices', 'memory', 'cpuacct', 'cpu', 'cpuset', 'freezer', 'systemd']
 cgroups sub-directories created for user root
+Running "/hello"
 Creating cgroups sub-directories for user root
 Hierarchies availables: ['hugetlb', 'perf_event', 'blkio', 'devices', 'memory', 'cpuacct', 'cpu', 'cpuset', 'freezer', 'systemd']
 cgroups sub-directories created for user root
-Setting ENV PATH=/usr/local/tomcat/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-Setting ENV LANG=C.UTF-8
-Setting ENV JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64/jre
-Setting ENV JAVA_VERSION=7u111
-Setting ENV JAVA_DEBIAN_VERSION=7u111-2.6.7-1~deb8u1
-Setting ENV CATALINA_HOME=/usr/local/tomcat
-Setting ENV TOMCAT_NATIVE_LIBDIR=/usr/local/tomcat/native-jni-lib
-Setting ENV LD_LIBRARY_PATH=/usr/local/tomcat/native-jni-lib
-Setting ENV OPENSSL_VERSION=1.0.2j-1
-Setting ENV TOMCAT_MAJOR=8
-Setting ENV TOMCAT_VERSION=8.0.38
-Setting ENV TOMCAT_TGZ_URL=https://www.apache.org/dyn/closer.cgi?action=download&filename=tomcat/tomcat-8/v8.0.38/bin/apache-tomcat-8.0.38.tar.gz
-Setting ENV TOMCAT_ASC_URL=https://www.apache.org/dist/tomcat/tomcat-8/v8.0.38/bin/apache-tomcat-8.0.38.tar.gz.asc
+Setting ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker Hub account:
+ https://hub.docker.com
+
+For more examples and ideas, visit:
+ https://docs.docker.com/engine/userguide/
+
+None
+None
 Finalizing
 done
 ```
