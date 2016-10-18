@@ -90,11 +90,10 @@ class RunCommand(BaseDockerCommand):
                     cg = Cgroup(name)
                     cg.add(pid)
 
-                with Chroot(layer_dir):
-                    entry_cmd = '/bin/sh echo "gordo!"' # TODO get out of Dockerfile
-                    p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup)
-                    p1.wait()
-                    print(p1.stdout)
+                entry_cmd = 'chroot {0}'.format(layer_dir) # TODO get out of Dockerfile
+                p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup)
+                # p1.wait()
+                print(p1.stdout)
 
             except Exception as e:
                 log.error(e)
