@@ -1,6 +1,7 @@
 import os
 import uuid
 import json
+from pprint import pprint
 import subprocess
 import traceback
 from pyroute2 import IPDB, NetNS, netns
@@ -31,10 +32,9 @@ class RunCommand(BaseDockerCommand):
         target_file = os.path.join(_base_dir_, match)
         with open(target_file) as tf:
             image_details = json.loads(tf.read())
-
         # setup environment details
-        state = json.loads(image_details['history'][0])
-        import pprint; pprint.pprint(state)
+        state = json.loads(image_details['history'][0]['v1Compatibility'])
+        pprint(state)
 
         id = uuid.uuid1()
 
