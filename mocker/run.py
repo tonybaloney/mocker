@@ -91,8 +91,8 @@ class RunCommand(BaseDockerCommand):
                     netns.setns(netns_name)
                     cg.add(pid)
 
-                entry_cmd = 'chroot {0}'.format(layer_dir) # TODO get out of Dockerfile
-                p1 = subprocess.Popen(entry_cmd, preexec_fn=in_cgroup, shell=True)
+                p1 = subprocess.Popen('chroot {0}'.format(layer_dir), preexec_fn=in_cgroup, shell=True)
+                p2 = subprocess.Popen('echo "hello world" > /tmp/test', preexec_fn=in_cgroup, shell=True)
                 # p1.wait()
                 print(p1.stdout)
 
