@@ -35,7 +35,8 @@ class RunCommand(BaseDockerCommand):
         # setup environment details
         state = json.loads(image_details['history'][0]['v1Compatibility'])
         env_vars = state['config']['Env']
-        start_cmd = state['config']['Cmd']
+        start_cmd = ' '.join(state['config']['Cmd'])
+        working_dir = state['WorkingDir']
 
         id = uuid.uuid1()
 
@@ -111,7 +112,10 @@ class RunCommand(BaseDockerCommand):
                         traceback.print_exc()
                         log.error(e)
 
-                subprocess.Popen('echo "hello world" > /tmp/test', preexec_fn=in_cgroup, shell=True)
+                process = subprocess.Popen('cd {0} ; ./{1} &> /tmp/out'.format(working_dir,
+                                                                              start_cmd),
+                                           preexec_fn=in_cgroup, shell=True)
+                process.wait()
 
             except Exception as e:
                 traceback.print_exc()
