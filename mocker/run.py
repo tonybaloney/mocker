@@ -63,9 +63,9 @@ class RunCommand(BaseDockerCommand):
                 i1.up()
                 if bridge_if_name not in existing_interfaces:
                     bridge = ipdb.create(kind='bridge', ifname=bridge_if_name).commit()
-                    bridge.add_port(i1)
+                    bridge.add_port(i1).commit()
                 else:
-                    ipdb.interfaces[bridge_if_name].add_port(i1)
+                    ipdb.interfaces[bridge_if_name].add_port(i1).commit()
 
             # Create a network namespace
             netns.create(netns_name)
@@ -83,8 +83,8 @@ class RunCommand(BaseDockerCommand):
                 veth1.add_ip('10.0.0.{0}/24'.format(ip_last_octet))
                 veth1.up()
             ns.routes.add({
-                    'dst': 'default',
-                    'gateway': '10.0.0.1'})
+                'dst': 'default',
+                'gateway': '10.0.0.1'}).commit()
 
             try:
                 # setup cgroup directory for this user
