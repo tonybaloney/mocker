@@ -34,7 +34,8 @@ class RunCommand(BaseDockerCommand):
             image_details = json.loads(tf.read())
         # setup environment details
         state = json.loads(image_details['history'][0]['v1Compatibility'])
-        pprint(state)
+
+        # Extract information about this container
         env_vars = state['config']['Env']
         start_cmd = subprocess.list2cmdline(state['config']['Cmd'])
         working_dir = state['config']['WorkingDir']
@@ -74,7 +75,7 @@ class RunCommand(BaseDockerCommand):
                 veth1.net_ns_fd = netns_name
 
             # Use this network namespace as the database
-            with IPDB(NetNS(netns_name)) as ns:
+            with IPDB(nl=NetNS(netns_name)) as ns:
                 ns.interfaces.lo.up()
                 ns.interfaces[veth1_name].address = "02:42:ac:11:00:{0}".format(mac)
                 ns.interfaces[veth1_name].add_ip('10.0.0.{0}/24'.format(ip_last_octet))
