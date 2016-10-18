@@ -34,9 +34,10 @@ class RunCommand(BaseDockerCommand):
             image_details = json.loads(tf.read())
         # setup environment details
         state = json.loads(image_details['history'][0]['v1Compatibility'])
+        # pprint(state)
         env_vars = state['config']['Env']
         start_cmd = ' '.join(state['config']['Cmd'])
-        working_dir = state['WorkingDir']
+        working_dir = state['config']['WorkingDir']
 
         id = uuid.uuid1()
 
@@ -108,14 +109,18 @@ class RunCommand(BaseDockerCommand):
                         cg.add(pid)
 
                         os.chroot(layer_dir)
+                        if working_dir != '':
+                            os.chdir(working_dir)
                     except Exception as e:
                         traceback.print_exc()
+                        log.error("Failed to preexecute function")
                         log.error(e)
-                cmd = 'cd {0} ; ./{1} &> /tmp/out'.format(working_dir, start_cmd)
-                log.debug('Running "%s"' % cmd)
-                process = subprocess.Popen(cmd, preexec_fn=in_cgroup, shell=True)
+                cmd = start_cmd
+                log.info('Running "%s"' % cmd)
+                process = subprocess.Popen(cmd, preexec_fn=in_cgroup)
                 process.wait()
-
+                print(process.stdout)
+                log.error(process.stderr)
             except Exception as e:
                 traceback.print_exc()
                 log.error(e)
