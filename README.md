@@ -3,6 +3,13 @@ A crappy imitation of Docker, for teaching purposes
 
 ![](https://pbs.twimg.com/media/CmE8k1qVAAAZrIt.jpg)
 
+## Why?
+
+I keep hearing statements like "Docker is basically just cgroups", "Docker is just chroot on steroids", which is totally incorrect.
+
+I'm giving a talk at the Sydney Docker meetup on the 18th October about some of the core concepts in Kernel namespaces, cgroups and network namespaces and fancied a simple implementation to show how container isolation works, the docker image format (the new API) and also how much more there is to
+Docker than those core kernel features.
+
 ## mocker pull
 
 Mocker pull will download a Docker image from the Docker public repository, download the image layers and extract them into a local folder.
