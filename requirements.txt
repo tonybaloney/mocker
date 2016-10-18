@@ -1,6 +1,7 @@
 requests
 docopt
 terminaltables
+flake8
 nsenter
 snakeoil
 pychroot
