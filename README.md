@@ -1,5 +1,5 @@
 # mocker
-A crappy imitation of Docker, for teaching purposes
+A proof-of-concept imitation of Docker, written in 100% Python. Using Kernel Namespaces, cgroups and network namespaces/iproute2 for Linux.
 
 ![](https://pbs.twimg.com/media/CmE8k1qVAAAZrIt.jpg)
 
