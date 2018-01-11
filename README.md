@@ -1,6 +1,9 @@
 # mocker
 A proof-of-concept imitation of Docker, written in 100% Python. Using Kernel Namespaces, cgroups and network namespaces/iproute2 for Linux.
 
+- [Recording of the talk at PyCon AU 2017 on Mocker](https://www.youtube.com/watch?v=I326bpbdvJo&feature=youtu.be)
+- [Blog Post on using these libraries](https://hackernoon.com/3-tricks-for-mastering-docker-with-python-99876412348d)
+
 ![](https://pbs.twimg.com/media/CmE8k1qVAAAZrIt.jpg)
 
 ## Why?
