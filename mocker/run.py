@@ -11,6 +11,8 @@ from cgroups.user import create_user_cgroups
 from mocker import _base_dir_, log
 from .base import BaseDockerCommand
 from .images import ImagesCommand
+from .pull import PullCommand
+
 
 try:
     from pychroot import Chroot
