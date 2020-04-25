@@ -27,7 +27,15 @@ class RunCommand(BaseDockerCommand):
         image_name = kwargs['<name>']
         ip_last_octet = 103 # TODO : configurable
 
-        match = [i[3] for i in images if i[0] == image_name][0]
+        file = [i[3] for i in images if i[0] == image_name]
+        if (file == []):
+            kwargs['pull'] = True
+            kwargs['<name>'] = kwargs['<name>'].split("/")[1]
+            PullCommand(*args, **kwargs).run()
+            images = ImagesCommand().list_images()
+            file = [i[3] for i in images if i[0] == image_name]
+            
+        match = file[0]
 
         target_file = os.path.join(_base_dir_, match)
         with open(target_file) as tf:
